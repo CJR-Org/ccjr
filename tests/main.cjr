@@ -1,0 +1,11 @@
+require("test")
+
+var hello: string = "world"
+var a: bool = true
+
+func main(): i8 {
+  printf("%drequire(a)\n", add_num(10, 30))
+  printf("%s\n", hello)
+  printf("%s\n", a ? "true" : "false")
+  return 0
+}

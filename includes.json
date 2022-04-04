@@ -1,0 +1,17 @@
+{
+    "includes": [
+        "stdint.h",
+        "stdio.h",
+        "stdlib.h",
+        "stdbool.h",
+        "math.h",
+        "ctype.h",
+        "time.h",
+        "assert.h",
+        "locale.h",
+        "signal.h",
+        "setjmp.h",
+        "stdarg.h",
+        "errno.h"
+    ]
+}
