@@ -16,8 +16,6 @@ const config = JSON.parse(Deno.readTextFileSync("./config.json"));
 
 const output = [];
 
-console.log("Transpiling...");
-
 function get_type(type) {
   let append = "";
 
@@ -71,65 +69,81 @@ function includes_require(code) {
   return has_require;
 }
 
-let t1 = new Date();
+function preprocess() {
+  while (includes_require(code))
+    code = require_externals(code);
 
-while (includes_require(code))
-  code = require_externals(code);
+  return code;
+}
 
-const lines = code.split("\n");
+function transpile(lines) {
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    line.trim();
+    let new_line = "";
 
-for (let i = 0; i < lines.length; i++) {
-  let line = lines[i];
-  line.trim();
-  let new_line = "";
+    line.split(" ").forEach((word) => {
+      if (word === "var") {
+        const name = line.split(":")[0].split("var")[1].trim();
+        let type = line.split(":")[1];
+        const value = type.split("=")[1].trimStart();
+        type = type.split("=")[0].trim();
 
-  line.split(" ").forEach((word) => {
-    if (word === "var") {
-      const name = line.split(":")[0].split("var")[1].trim();
-      let type = line.split(":")[1];
-      const value = type.split("=")[1].trimStart();
-      type = type.split("=")[0].trim();
+        new_line += `${get_type(type)} ${name} = ${value}`;
+      }
 
-      new_line += `${get_type(type)} ${name} = ${value}`;
+      if (word === "func") {
+        const name = line.split("func")[1].split("(")[0].trim();
+        const type = line.split(")")[1].split(":")[1].split("{")[0].trim();
+        const args = line.split("(")[1].split(")")[0].split(",");
+        const translated_args = [];
+
+        if (args.length === 1) args.pop();
+
+        args.forEach((arg) => {
+          let arg_name = arg.split(":")[0].trim();
+          let arg_type = arg.split(":")[1].trim();
+          translated_args.push(`${get_type(arg_type)} ${arg_name}`);
+        });
+
+        new_line += `${get_type(type)} ${name}(${translated_args.join(", ")}) {`;
+      }
+    });
+
+    if (!new_line) {
+      if (requires_semicolon(line)) line += ";";
+      output.push(line);
+    } else {
+      if (requires_semicolon(new_line)) new_line += ";";
+      output.push(new_line);
     }
-
-    if (word === "func") {
-      const name = line.split("func")[1].split("(")[0].trim();
-      const type = line.split(")")[1].split(":")[1].split("{")[0].trim();
-      const args = line.split("(")[1].split(")")[0].split(",");
-      const translated_args = [];
-
-      if (args.length === 1) args.pop();
-
-      args.forEach((arg) => {
-        let arg_name = arg.split(":")[0].trim();
-        let arg_type = arg.split(":")[1].trim();
-        translated_args.push(`${get_type(arg_type)} ${arg_name}`);
-      });
-
-      new_line += `${get_type(type)} ${name}(${translated_args.join(", ")}) {`;
-    }
-  });
-
-  if (!new_line) {
-    if (requires_semicolon(line)) line += ";";
-    output.push(line);
-  } else {
-    if (requires_semicolon(new_line)) new_line += ";";
-    output.push(new_line);
   }
 }
 
-console.log(`Transpiled successfully. (${new Date() - t1}ms)`);
+async function compile(output) {
+  const temp_name = `temp_${Math.floor(Math.random() * 1000000).toString()}.c`;
+  Deno.writeTextFileSync(temp_name, `#include <${includes.includes.join(">\n#include <")}>\n${output.join("\n")}`);
+  const compilation = Deno.run({ cmd: ["gcc", temp_name] });
+  await compilation.status();
+  if (!Deno.args.includes("--keep-temp")) Deno.removeSync(temp_name);
+}
 
-console.log("Compiling with gcc...");
+async function run() {
+  let start = new Date();
+  console.log("Preprocessing...");
+  code = preprocess(code);
+  console.log(`Preprocessed successfully. (${new Date() - start}ms)`);
+  
+  start = new Date();
+  console.log("Transpiling...");
+  const lines = code.split("\n");
+  transpile(lines);
+  console.log(`Transpiled successfully. (${new Date() - start}ms)`);
+  
+  start = new Date();
+  console.log("Compiling with gcc...");
+  await compile(output);
+  console.log(`Compiled successfully. (${new Date() - start}ms)`);
+}
 
-t1 = new Date();
-
-const temp_name = `temp_${Math.floor(Math.random() * 1000000).toString()}.c`;
-Deno.writeTextFileSync(temp_name, `#include <${includes.includes.join(">\n#include <")}>\n${output.join("\n")}`);
-const compilation = Deno.run({ cmd: ["gcc", temp_name] });
-await compilation.status();
-if (!Deno.args.includes("--keep-temp")) Deno.removeSync(temp_name);
-
-console.log(`Compiled successfully. (${new Date() - t1}ms)`);
+await run();

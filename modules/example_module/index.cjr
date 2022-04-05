@@ -1,5 +1,5 @@
 require("./add.cjr")
 
-func add_num(a: u64, b: u64): u64 {
+const func add_num(a: u64, b: u64): u64 {
     return add(a, b)
 }

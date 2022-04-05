@@ -1,0 +1,28 @@
+/*
+    Welcome to CJR!
+
+    CJR contains mostly a mix of JavaScript and Rust syntax, and transpiles to C.
+
+    Some rules:
+        - Semicolons are not required anywhere, as they are automatically added.
+        - Preprocessor keywords such as require can be placed anywhere in the code
+          and produce the same results, as long as they are at the start of lines.
+        - Types proceed name and use a colon (var a: i32 = 10)
+            - In functions:
+              func hello(name: string): string {}
+                                        ^ return type
+        - CJR is not object oriented, however may be in the future.
+
+    By default, CCJR removes the temporary C file which is generated during transpilation.
+    To keep it use the --keep-temp flag, to clean temp files run "make clean"
+*/
+
+// Main is the entry point of the program and is required
+// Using a void return type is possible, but not recommended as it does not return an exit status.
+func main(): i32 {
+    // Currently CJR does not have a custom print function, however this may be added in the future.
+    printf("Hello, World!\n")
+
+    // Return success status
+    return 0
+}

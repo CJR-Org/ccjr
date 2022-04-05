@@ -1,0 +1,24 @@
+require("example_module")
+
+var string_test: string = "Hello, world!"
+var boolean_true_test: bool = true
+var boolean_false_test: bool = false
+
+func test(text: string, statement: bool): void {
+  printf("[*] Test: %s\n", text)
+  if(statement) {
+    printf("\033[A[\x1b[1;32m✓\x1b[37;m] Test: %s\n", text)
+  } else {
+    printf("\033[A[\x1b[1;31m✗\x1b[37;m] Test: %s\n", text)
+  }
+}
+
+func main(): i8 {
+  var nested_function_test: u64 = add_num(10, 30)
+
+  test("Nested function", nested_function_test == 40);
+  test("String test", string_test == "Hello, world!");
+  test("Boolean test (1/2)", boolean_true_test == true);
+  test("Boolean test (2/2)", boolean_false_test == false);
+  return 0
+}

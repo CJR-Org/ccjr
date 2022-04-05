@@ -1,0 +1,28 @@
+/*
+    Requires in CJR are preprocessed and included in the main file before transpiling.
+
+    There are 2 types of includes possible:
+        - Including a single local file with require("./file.cjr")
+        - Including a module from the modules folder with require("module_name")
+
+    Modules in the modules folder can access other files in their folder without adding a prefix to the path.
+*/
+
+// We will be requiring the example_module from the modules folder.
+// All modules in the modules folder are required to have index.cjr file, this is the main code goes.
+// The example module also includes another file in its folder called add.cjr, which is included by index.cjr
+// The preprocessor recursively searches and includes all required files.
+// Behind the scenes it is pulling all the contents of each required file into the main file.
+
+require("example_module")
+
+// We have now exposed the add_num and add functions.
+// To see what this looks like, add the --keep-temp flag when transpiling.
+// Because require is a preprocessed keyword, it can be anywhere in the code and will produce the same results.
+
+func main(): i8 {
+    printf("Hello, require!\n")
+    printf("%d\n", add_num(10, 20))
+    
+    return 0
+}

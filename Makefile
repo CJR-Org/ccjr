@@ -2,7 +2,7 @@ bundle:
 	deno run --allow-read --allow-write bundle.js ccjr.js
 
 transpile:
-	deno run --allow-read --allow-write --allow-run ccjr.js ./tests/main.cjr
+	deno run --allow-read --allow-write --allow-run ccjr.js ./examples/hello.cjr
 
 run: transpile
 	./a.out
@@ -15,7 +15,11 @@ install: compile
 	mv ccjr /usr/bin
 
 debug: clean
-	deno run --allow-read --allow-write --allow-run ccjr.js ./tests/main.cjr --keep-temp
+	deno run --allow-read --allow-write --allow-run ccjr.js ./tests/test.cjr --keep-temp
+	./a.out
+
+test: install
+	ccjr tests/test.cjr
 	./a.out
 
 clean:
