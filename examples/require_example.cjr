@@ -17,7 +17,7 @@
 require("example_module")
 
 // We have now exposed the add_num and add functions.
-// To see what this looks like, add the --keep-temp flag when transpiling.
+// To see what this looks like, add the -keeptemp flag when transpiling.
 // Because require is a preprocessed keyword, it can be anywhere in the code and will produce the same results.
 
 func main(): i8 {

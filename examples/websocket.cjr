@@ -1,0 +1,24 @@
+require("websocket")
+
+func onopen(client: ws_client): void {
+	var cli: string = ws_getaddress(client)
+	printf("Connection opened, addr: %s\n", cli);
+}
+
+func onclose(client: ws_client): void {
+	var cli: string = ws_getaddress(client);
+	printf("Connection closed, addr: %s\n", cli);
+}
+
+func onmessage(client: ws_client, msg: const unsigned string, size: u64, type: i32): void {
+	var cli: string = ws_getaddress(client);
+	printf("I receive a message: %s (size: %d, type: %d), from: %s\n", msg, size, type, cli);
+
+	ws_sendframe(NULL, (char *)msg, size, type);
+}
+
+require("websocket/serve")
+
+func main(): void {
+	serve(8080)
+}

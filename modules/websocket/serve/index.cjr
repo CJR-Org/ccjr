@@ -1,0 +1,7 @@
+func serve(port: i32): void {
+    struct ws_events evs
+    evs.onopen = &onopen
+    evs.onclose = &onclose
+    evs.onmessage = &onmessage
+    ws_socket(&evs, port, 0)
+}

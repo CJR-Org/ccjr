@@ -14,7 +14,7 @@
         - CJR is not object oriented, however may be in the future.
 
     By default, CCJR removes the temporary C file which is generated during transpilation.
-    To keep it use the --keep-temp flag, to clean temp files run "make clean"
+    To keep it use the -keeptemp flag, to clean temp files run "make clean"
 */
 
 // Main is the entry point of the program and is required
