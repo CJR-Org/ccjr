@@ -1,5 +1,0 @@
-library("./wsServer/libws.a")
-include("./wsServer/include/ws.h")
-gccflag("pthread")
-
-typedef ws_cli_conn_t* ws_client;

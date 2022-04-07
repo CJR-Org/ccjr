@@ -1,3 +1,4 @@
+// Include the base websocket module which wraps C functions
 require("websocket")
 
 func onopen(client: ws_client): void {
@@ -12,13 +13,14 @@ func onclose(client: ws_client): void {
 
 func onmessage(client: ws_client, msg: const unsigned string, size: u64, type: i32): void {
 	var cli: string = ws_getaddress(client);
-	printf("I receive a message: %s (size: %d, type: %d), from: %s\n", msg, size, type, cli);
+	printf("Incoming message: %s (size: %d, type: %d), from: %s\n", msg, size, type, cli);
 
 	ws_sendframe(NULL, (char *)msg, size, type);
 }
 
+// Include the function for serving the websocket server, must be after the 3 functions above
 require("websocket/serve")
 
 func main(): void {
-	serve(8080)
+	serve(8080) // websocket port
 }

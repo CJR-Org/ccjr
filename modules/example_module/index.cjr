@@ -1,5 +1,0 @@
-require("./add.cjr")
-
-const func add_num(a: u64, b: u64): u64 {
-    return add(a, b)
-}
