@@ -1,5 +1,3 @@
-EXAMPLES=$(wildcard examples/*.cjr)
-
 bundle:
 	deno run --allow-read --allow-write bundle.js ccjr.js
 
@@ -16,24 +14,24 @@ compile: bundle
 install: compile
 	mv ccjr /usr/bin
 
-debug: clean
-	deno run --allow-read --allow-write --allow-run --allow-env ccjr.js ./tests/test.cjr -keeptemp
-	./a.out
+example:
+	make -C examples
 
-test: install
-	ccjr tests/test.cjr
-	./a.out
+debug: install clean
+	cd tests && pcjr install && ccjr test.cjr -keeptemp && ./a.out
 
-SOURCES := $(wildcard examples/*.cjr)
-OBJECTS := $(patsubst examples/%.cjr, examples/%.o, $(SOURCES))
-
-examples: $(OBJECTS)
-examples/%.o: examples/%.cjr
-	ccjr $< -o $@
+test:
+	make -C tests
 
 clean:
 	rm -rf *.c
 	rm -rf *.out
+	rm -rf tests/*.c
+	rm -rf tests/*.out
+	rm -rf examples/*.c
+	rm -rf examples/*.out
 	rm -rf bundled.js
 	rm -rf ccjr
 	rm -rf examples/*.o
+	rm -rf examples/modules
+	rm -rf tests/modules

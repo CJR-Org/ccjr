@@ -22,5 +22,5 @@ func onmessage(client: ws_client, msg: const unsigned string, size: u64, type: i
 require("websocket/serve")
 
 func main(): void {
-	serve(8080) // websocket port
+	serve(8080)
 }
