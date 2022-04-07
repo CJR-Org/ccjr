@@ -17,7 +17,7 @@ Simply run `ccjr file.cjr`
 
 ## Flags
 ### Custom flags
-`-keeptemp`: Keeps temporary C file
+`-keeptemp`: Keeps the temporary C file generated during transpilation.
 ### GCC Flags
 All GCC flags can be used like normal and will be used when compiling with gcc. Flags can be added from CJR directly with the `gccflag()` preprocessor keyword, such as `gccflag("pthread")`.
 
