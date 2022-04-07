@@ -6,9 +6,9 @@ CJR stands for C, JS, Rust, as it is representative of JS and Rust, and transpil
 not even near being finished and the code is very messy
 
 # Installing
-`git clone https://github.com/CJR-Org/ccjr`
-`cd ccjr`
-`sudo make install`
+`git clone https://github.com/CJR-Org/ccjr`  
+`cd ccjr`  
+`sudo make install`  
 You can then remove the directory created by cloning.
 
 # Usage
