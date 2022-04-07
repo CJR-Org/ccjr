@@ -23,7 +23,7 @@ All GCC flags can be used like normal and will be used when compiling with gcc. 
 
 ## Preprocessors
 ### CJR currently has 4 processors.
-Preprocessors syntax is as follows: `preprocessor(arguments)`, such as `require(example-module)`.  
+Preprocessors syntax is as follows: `preprocessor(arguments)`, such as `require("example-module")`.  
 <br>
 
 - `require` pulls in CJR source code from other files into the main file. It acts differently based on how its used.
