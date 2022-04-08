@@ -1,0 +1,13 @@
+namespace test {
+    var variable: string = "world"
+
+    namespace nested {
+        func hello(): void {
+            printf("hello, %s", test->variable)
+        }
+    } nested
+} test
+
+func main(): void {
+    test->nested->hello()
+}

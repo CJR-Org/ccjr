@@ -22,24 +22,27 @@ function get_type(type, types) {
 
 export function transpile(lines, types) {
   let output = [];
+  let namespace = [];
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
     line.trim();
     let new_line = "";
+    let ns = namespace.reverse().join("_OBJ_") + "_OBJ_";
+    if(!namespace[0]) ns = "";
 
     line.split(/[\s\t]+/).forEach((word) => {
       if (word === "var") {
-        const name = line.split(":")[0].split("var")[1].trim();
+        const name = line.split(":")[0].split("var ")[1].trim();
         let type = line.split(":")[1];
         const value = type.split("=")[1].trimStart();
         type = type.split("=")[0].trim();
 
-        new_line += `${get_type(type, types)} ${name} = ${value}`;
+        new_line += `${get_type(type, types)} ${ns}${name} = ${value}`;
       }
 
       if (word === "func") {
-        const name = line.split("func")[1].split("(")[0].trim();
+        const name = line.split("func ")[1].split("(")[0].trim();
         const type = line.split(")")[1].split(":")[1].split("{")[0].trim();
         let args = line.split("(")[1].split(")")[0].split(",");
         if(args.length === 1) {
@@ -57,9 +60,34 @@ export function transpile(lines, types) {
           translated_args.push(`${get_type(arg_type, types)} ${arg_name}`);
         });
 
-        new_line += `${get_type(type, types)} ${name}(${translated_args.join(", ")}) {`;
+        new_line += `${get_type(type, types)} ${ns}${name}(${translated_args.join(", ")}) {`;
+      }
+
+      if(word.includes("->")) {
+        if(!new_line) new_line = line;
+        let start = new_line.split("->")[0].split(" ")[1];
+        if(start.includes('"') || start.includes("'")) {
+
+        } else new_line = new_line.split("->").join("_OBJ_");
+      }
+
+      if(word == "namespace") {
+        const name = line.split("namespace")[1].split("{")[0].trim();
+        namespace.unshift(name);
+        line = "";
       }
     });
+
+    if(line.trim().startsWith("}") && line.trim().split(" ").length == 2 && line.trim().length > 2 && !line.includes(")") && line.split("}").length == 2) {
+      const name = line.split("}")[1].split(";")[0].trim();
+      if(namespace.includes(name)) {
+        namespace.shift();
+        line = "";
+      } else {
+        console.error(`Unknown namespace ${name}`);
+        Deno.exit(1);
+      }
+    }
 
     if (!new_line) {
       if (requires_semicolon(line)) line += ";";
