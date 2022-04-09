@@ -20,16 +20,17 @@ function get_type(type, types) {
   // console.error(`Unknown Type: "${type}"`);
 }
 
-export function transpile(lines, types) {
+export function transpile(lines, types, verbose) {
   let output = [];
   let namespace = [];
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
-    line.trim();
+    line = line.trim();
     let new_line = "";
     let ns = namespace.reverse().join("_OBJ_") + "_OBJ_";
     if(!namespace[0]) ns = "";
+    if(line.startsWith("//")) line = "";
 
     line.split(/[\s\t]+/).forEach((word) => {
       if (word === "var") {
@@ -37,6 +38,8 @@ export function transpile(lines, types) {
         let type = line.split(":")[1];
         const value = type.split("=")[1].trimStart();
         type = type.split("=")[0].trim();
+
+        if(verbose) console.log(`Found variable symbol: ${name} with type ${type} in namespace "${ns}"\n`);
 
         new_line += `${get_type(type, types)} ${ns}${name} = ${value}`;
       }
@@ -60,26 +63,38 @@ export function transpile(lines, types) {
           translated_args.push(`${get_type(arg_type, types)} ${arg_name}`);
         });
 
+
+        if(verbose) console.log(`Found function symbol: ${name} with return type ${type} in namespace "${ns}" and args: ${translated_args.join(", ")}\n`);
+
         new_line += `${get_type(type, types)} ${ns}${name}(${translated_args.join(", ")}) {`;
       }
 
-      if(word.includes("->")) {
+      if(word.includes("::")) {
         if(!new_line) new_line = line;
-        let start = new_line.split("->")[0].split(" ")[1];
-        if(start.includes('"') || start.includes("'")) {
+        // console.log(new_line);
+        // let start = new_line.split("::")[0].split(" ")[1];
+        // console.log(start);
+        // if(start.includes('"') || start.includes("'")) {
 
-        } else new_line = new_line.split("->").join("_OBJ_");
+        new_line = new_line.split("::").join("_OBJ_");
+
+        if(verbose) console.log(`Found namespace member reference symbol: ${line} in namespace ${ns}, deobjectified to ${new_line}\n`);
       }
 
       if(word == "namespace") {
-        const name = line.split("namespace")[1].split("{")[0].trim();
+        const name = line.slice("namespace ".length).split("{")[0].trim();
         namespace.unshift(name);
         line = "";
+
+        if(verbose) console.log(`Found namespace declaration symbol: ${name} in namespace "${ns}"\n`);
       }
     });
 
-    if(line.trim().startsWith("}") && line.trim().split(" ").length == 2 && line.trim().length > 2 && !line.includes(")") && line.split("}").length == 2) {
+    if(line.startsWith("}") && line.split(" ").length == 2 && line.length > 2 && !line.includes(")") && line.split("}").length == 2) {
       const name = line.split("}")[1].split(";")[0].trim();
+
+      if(verbose) console.log(`Found closing namespace symbol: ${name} in namespace "${ns}"\n`);
+
       if(namespace.includes(name)) {
         namespace.shift();
         line = "";

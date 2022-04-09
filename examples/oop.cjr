@@ -1,13 +1,22 @@
-namespace test {
-    var variable: string = "world"
+// OOP in CJR is very simple, and not enforced, you can write an entire project without it.
+// There are no instances of objects, there are simply namespaces. There is no "new" keyword.
 
-    namespace nested {
+// Create a namespace called example_namespace
+namespace example_namespace {
+    var variable: string = "OOP"
+
+    // Create a nested namespace called nested_namespace
+    namespace nested_namespace {
         func hello(): void {
-            printf("hello, %s", test->variable)
+            printf("Hello, %s!\n", example_namespace::variable)
         }
-    } nested
-} test
+        
+    // Close nested_namespace namespace
+    } nested_namespace
+
+// Close example_namespace namespace
+} example_namespace
 
 func main(): void {
-    test->nested->hello()
+    example_namespace::nested_namespace::hello()
 }

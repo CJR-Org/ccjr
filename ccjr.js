@@ -20,6 +20,11 @@ if (args.includes("-keeptemp")) {
   args.splice(args.indexOf("-keeptemp"), 1);
 }
 
+
+if (args.includes("-verbose")) {
+  args.splice(args.indexOf("-verbose"), 1);
+}
+
 let start = new Date();
 console.log(`Preprocessing ${code_path}...`);
 const preprocessed = preprocess(code, config);
@@ -29,7 +34,7 @@ console.log(`Preprocessed ${code_path} successfully. (${new Date() - start}ms)`)
 start = new Date();
 console.log(`Transpiling ${code_path}...`);
 const lines = code.split("\n");
-const output = transpile(lines, types);
+const output = transpile(lines, types, Deno.args.includes("-verbose"));
 console.log(`Transpiled ${code_path} successfully. (${new Date() - start}ms)`);
 
 start = new Date();
