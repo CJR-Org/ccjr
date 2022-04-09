@@ -99,8 +99,7 @@ export function transpile(lines, types, verbose) {
         namespace.shift();
         line = "";
       } else {
-        console.error(`Unknown namespace ${name}`);
-        Deno.exit(1);
+        throw new Error(`Unknown namespace ${name}`);
       }
     }
 

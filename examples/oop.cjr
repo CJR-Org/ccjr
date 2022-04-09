@@ -7,10 +7,12 @@ namespace example_namespace {
 
     // Create a nested namespace called nested_namespace
     namespace nested_namespace {
+        
+        // Put a function in the nested_namespace namespace which is in the example_namespace namespace
         func hello(): void {
             printf("Hello, %s!\n", example_namespace::variable)
         }
-        
+
     // Close nested_namespace namespace
     } nested_namespace
 
