@@ -7,3 +7,7 @@ export function requires_semicolon(line) {
   if (!line) return false;
   return true;
 }
+
+function format(code) {
+  code.split("\n\n").join("\n");
+}

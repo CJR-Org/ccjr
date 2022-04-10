@@ -23,12 +23,14 @@ function get_type(type, types) {
 export function transpile(lines, types, verbose) {
   let output = [];
   let namespace = [];
+  let namespace_pos = [];
+  let brackets = 0;
 
   for (let i = 0; i < lines.length; i++) {
     let line = lines[i];
     line = line.trim();
     let new_line = "";
-    let ns = namespace.reverse().join("_OBJ_") + "_OBJ_";
+    let ns = [...namespace].reverse().join("_o_") + "_o_";
     if(!namespace[0]) ns = "";
     if(line.startsWith("//")) line = "";
 
@@ -76,32 +78,47 @@ export function transpile(lines, types, verbose) {
         // console.log(start);
         // if(start.includes('"') || start.includes("'")) {
 
-        new_line = new_line.split("::").join("_OBJ_");
+        new_line = new_line.split("::").join("_o_");
 
         if(verbose) console.log(`Found namespace member reference symbol: ${line} in namespace ${ns}, deobjectified to ${new_line}\n`);
       }
 
       if(word == "namespace") {
         const name = line.slice("namespace ".length).split("{")[0].trim();
+        namespace_pos.push(brackets);
         namespace.unshift(name);
         line = "";
 
         if(verbose) console.log(`Found namespace declaration symbol: ${name} in namespace "${ns}"\n`);
       }
+
+      if(word == "{") {
+        brackets++;
+      }
+
+      if(word == "}") {
+        brackets--;
+
+        if(namespace_pos.includes(brackets)) {
+          namespace_pos.splice(namespace_pos.indexOf(brackets), 1);
+          namespace.shift();
+          line = "";
+        }
+      }
     });
 
-    if(line.startsWith("}") && line.split(" ").length == 2 && line.length > 2 && !line.includes(")") && line.split("}").length == 2) {
-      const name = line.split("}")[1].split(";")[0].trim();
+    // if(line.startsWith("}") && line.split(" ").length == 2 && line.length > 2 && !line.includes(")") && line.split("}").length == 2) {
+    //   const name = line.split("}")[1].split(";")[0].trim();
 
-      if(verbose) console.log(`Found closing namespace symbol: ${name} in namespace "${ns}"\n`);
+    //   if(verbose) console.log(`Found closing namespace symbol: ${name} in namespace "${ns}"\n`);
 
-      if(namespace.includes(name)) {
-        namespace.shift();
-        line = "";
-      } else {
-        throw new Error(`Unknown namespace ${name}`);
-      }
-    }
+    //   if(namespace.includes(name)) {
+    //     namespace.shift();
+    //     line = "";
+    //   } else {
+    //     throw new Error(`Unknown namespace ${name}`);
+    //   }
+    // }
 
     if (!new_line) {
       if (requires_semicolon(line)) line += ";";
