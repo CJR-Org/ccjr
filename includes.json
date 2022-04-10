@@ -12,6 +12,7 @@
         "signal.h",
         "setjmp.h",
         "stdarg.h",
-        "errno.h"
+        "errno.h",
+        "time.h"
     ]
 }

@@ -2,7 +2,7 @@ let libraries = [];
 
 function require_externals(code, prefix, config) {
     code.split("\n").forEach(line => {
-        if (line.trim().startsWith("include(")) 
+        if (line.trim().startsWith("include("))
         {
             let path = line.split("include(")[1].split(")")[0];
             const is_path = path.startsWith(`"`) && path.endsWith(`"`);
@@ -10,7 +10,7 @@ function require_externals(code, prefix, config) {
 
             code = code.split(line).join(`#include ${is_path ? '"' : '<'}${prefix}${path}`);
         } 
-        else if (line.trim().startsWith("library(")) 
+        else if (line.trim().startsWith("library("))
         {
             const path = eval(line.split("library(")[1].split(")")[0]);
             libraries.push(`${prefix}${path}`);
