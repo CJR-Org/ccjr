@@ -4,6 +4,14 @@ var string_test: string = "Hello, world!"
 var boolean_true_test: bool = true
 var boolean_false_test: bool = false
 
+namespace namespace_test {
+  var namespace_var_test: string = "hello"
+
+  func namespace_function_test(): string {
+    return namespace_test::namespace_var_test
+  }
+}
+
 func test(text: string, statement: bool): void {
   printf("[*] Test: %s\n", text)
   if(statement) {
@@ -16,9 +24,10 @@ func test(text: string, statement: bool): void {
 func main(): i8 {
   var nested_function_test: u64 = sum(10, 30)
 
-  test("Nested function", nested_function_test == 40);
-  test("String test", string_test == "Hello, world!");
-  test("Boolean test (1/2)", boolean_true_test == true);
-  test("Boolean test (2/2)", boolean_false_test == false);
+  test("Nested function", nested_function_test == 40)
+  test("String test", string_test == "Hello, world!")
+  test("Boolean test (1/2)", boolean_true_test == true)
+  test("Boolean test (2/2)", boolean_false_test == false)
+  test("Namespace test", namespace_test::namespace_function_test() == "hello")
   return 0
 }
