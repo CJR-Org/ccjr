@@ -38,7 +38,12 @@ export function transpile(lines, types, verbose) {
       if (word === "var") {
         const name = line.split(":")[0].split("var ")[1].trim();
         let type = line.split(":")[1];
-        const value = type.split("=")[1].trimStart();
+        let value = line.split(":");
+        value.shift();
+        value = value.join(":");
+        value = value.split("=");
+        value.shift();
+        value = value.join("").trimStart();
         type = type.split("=")[0].trim();
 
         if(verbose) console.log(`Found variable symbol: ${name} with type ${type} in namespace "${ns}"\n`);
