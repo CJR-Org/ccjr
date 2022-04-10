@@ -46,6 +46,11 @@ export function transpile(lines, types, verbose) {
         value = value.join("").trimStart();
         type = type.split("=")[0].trim();
 
+        if(value.startsWith("new ")) {
+          value = value.split("(");
+          value = `${value[0].slice(4)}::new(${value[1]}`;
+        }
+
         if(verbose) console.log(`Found variable symbol: ${name} with type ${type} in namespace "${ns}"\n`);
 
         new_line += `${get_type(type, types)} ${ns}${name} = ${value}`;

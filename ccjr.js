@@ -35,7 +35,10 @@ console.log(`Preprocessed ${code_path} successfully. (${new Date() - start}ms)`)
 start = new Date();
 console.log(`Transpiling ${code_path}...`);
 const lines = code.split("\n");
-let output = transpile(lines, types, Deno.args.includes("-verbose"));
+let output = lines;
+for(let i = 0; i < 2; i++) {
+  output = transpile(output, types, Deno.args.includes("-verbose"));
+}
 console.log(`Transpiled ${code_path} successfully. (${new Date() - start}ms)`);
 
 start = new Date();

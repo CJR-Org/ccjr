@@ -4,8 +4,11 @@ function require_externals(code, prefix, config) {
     code.split("\n").forEach(line => {
         if (line.trim().startsWith("include(")) 
         {
-            const path = eval(line.split("include(")[1].split(")")[0]);
-            code = code.split(line).join(`#include "${prefix}${path}"`);
+            let path = line.split("include(")[1].split(")")[0];
+            const is_path = path.startsWith(`"`) && path.endsWith(`"`);
+            path = path.slice(1);
+
+            code = code.split(line).join(`#include ${is_path ? '"' : '<'}${prefix}${path}`);
         } 
         else if (line.trim().startsWith("library(")) 
         {
