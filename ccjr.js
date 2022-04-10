@@ -1,6 +1,7 @@
 import { preprocess } from "./preprocess.js";
 import { transpile } from "./translate.js";
 import { compile } from "./compile.js";
+import { format } from "./postprocess.js";
 
 const types = JSON.parse(Deno.readTextFileSync("./types.json"));
 const includes = JSON.parse(Deno.readTextFileSync("./includes.json"));
@@ -34,8 +35,13 @@ console.log(`Preprocessed ${code_path} successfully. (${new Date() - start}ms)`)
 start = new Date();
 console.log(`Transpiling ${code_path}...`);
 const lines = code.split("\n");
-const output = transpile(lines, types, Deno.args.includes("-verbose"));
+let output = transpile(lines, types, Deno.args.includes("-verbose"));
 console.log(`Transpiled ${code_path} successfully. (${new Date() - start}ms)`);
+
+start = new Date();
+console.log(`Postprocessing ${code_path}...`);
+output = format(output.join("\n"));
+console.log(`Postprocessed ${code_path} successfully. (${new Date() - start}ms)`);
 
 start = new Date();
 console.log(`Compiling ${code_path} with GCC...`);
