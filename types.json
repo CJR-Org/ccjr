@@ -12,5 +12,5 @@
     "bool": "bool",
     "void": "void",
     "char": "char",
-    "string": "struct string"
+    "string": "char*"
 }
