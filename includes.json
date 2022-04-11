@@ -13,6 +13,7 @@
         "setjmp.h",
         "stdarg.h",
         "errno.h",
-        "time.h"
+        "time.h",
+        "string.h"
     ]
 }
